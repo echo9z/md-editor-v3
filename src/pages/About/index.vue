@@ -1,28 +1,20 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
+import { ref } from 'vue';
+import type { PropType } from 'vue';
 import MdEditor from 'md-editor-v3';
-import axios from '@/utils/request';
-import { version } from '../../../package.json';
 import { useStore } from 'vuex';
+import { version } from '../../../package.json';
+import text from '/public/about-en-US.md';
 
-const mdText = ref();
+const props = defineProps({
+  text: {
+    type: String as PropType<string>,
+    default: text
+  }
+});
+
+const mdText = ref(props.text?.replace(/\$\{EDITOR_VERSION\}/g, version));
 const store = useStore();
-
-const queryMd = () => {
-  axios
-    .get(`/about-${store.state.lang}.md`)
-    .then(({ data }) => {
-      mdText.value = (data as string).replace(/\$\{EDITOR_VERSION\}/g, version);
-    })
-    .catch((e) => {
-      console.error(e);
-
-      mdText.value = '文档读取失败！';
-    });
-};
-
-onMounted(queryMd);
-watch(() => store.state.lang, queryMd);
 </script>
 
 <template>

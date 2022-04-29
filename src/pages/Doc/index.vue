@@ -1,20 +1,22 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import MdEditor, { HeadList } from 'md-editor-v3';
+import type { PropType } from 'vue';
+import MdEditor from 'md-editor-v3';
 import { version } from '../../../package.json';
 import { useStore } from 'vuex';
+import text from '/public/doc-en-US.md';
 
-import docText from './doc-zh-CN.md';
+const props = defineProps({
+  text: {
+    type: String as PropType<string>,
+    default: text
+  }
+});
 
 const MdCatalog = MdEditor.Catalog;
 const scrollElement = document.documentElement;
-const mdText = ref(docText.replace(/\$\{EDITOR_VERSION\}/g, version));
-const catalogList = ref<Array<HeadList>>([]);
+const mdText = ref(props.text?.replace(/\$\{EDITOR_VERSION\}/g, version));
 const store = useStore();
-
-const onGetCatalog = (arr: any[]) => {
-  catalogList.value = arr;
-};
 </script>
 
 <template>
@@ -23,13 +25,12 @@ const onGetCatalog = (arr: any[]) => {
       <div class="content">
         <md-editor
           editorId="doc-preview"
-          v-model="mdText"
+          :model-value="mdText"
           :theme="store.state.theme"
           :language="store.state.lang"
           :previewTheme="store.state.previewTheme"
           preview-only
           show-code-row-number
-          @onGetCatalog="onGetCatalog"
         />
       </div>
       <div class="catalog">

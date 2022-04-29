@@ -1,9 +1,14 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useStore } from 'vuex';
+import { useRouter, useRoute } from 'vue-router';
 import './index.less';
 
 const store = useStore();
+const router = useRouter();
+const route = useRoute();
+
+const prefix = store.state.lang === 'zh-CN' ? '/zh' : '';
 
 const linkNames = computed(() => {
   return store.state.lang === 'zh-CN'
@@ -26,12 +31,21 @@ const linkNames = computed(() => {
         langIcon: '#icon-d-cn'
       };
 });
+
+const changeLang = () => {
+  store.commit('changeLang');
+  if (store.state.lang === 'zh-CN') {
+    router.push(`/zh${route.path}`);
+  } else {
+    router.push(`/${route.path.replace('/zh/', '')}`);
+  }
+};
 </script>
 
 <template>
   <ul class="nav-list">
     <li class="nav-item">
-      <router-link to="/">
+      <router-link :to="`${prefix}/`">
         <svg class="icon" aria-hidden="true">
           <use xlink:href="#icon-d-online"></use>
         </svg>
@@ -39,7 +53,7 @@ const linkNames = computed(() => {
       </router-link>
     </li>
     <li class="nav-item">
-      <router-link to="/docs">
+      <router-link :to="`${prefix}/docs`">
         <svg class="icon" aria-hidden="true">
           <use xlink:href="#icon-d-docs"></use>
         </svg>
@@ -47,7 +61,7 @@ const linkNames = computed(() => {
       </router-link>
     </li>
     <li class="nav-item">
-      <router-link to="/demo">
+      <router-link :to="`${prefix}/demo`">
         <svg class="icon" aria-hidden="true">
           <use xlink:href="#icon-d-demo"></use>
         </svg>
@@ -63,14 +77,14 @@ const linkNames = computed(() => {
       </a>
     </li>
     <li class="nav-item">
-      <router-link to="/about">
+      <router-link :to="`${prefix}/about`">
         <svg class="icon" aria-hidden="true">
           <use xlink:href="#icon-d-about"></use>
         </svg>
         {{ linkNames.about }}
       </router-link>
     </li>
-    <li class="nav-item" @click="store.commit('changeLang')">
+    <li class="nav-item" @click="changeLang">
       <svg class="icon" aria-hidden="true">
         <use :xlink:href="linkNames.langIcon"></use>
       </svg>

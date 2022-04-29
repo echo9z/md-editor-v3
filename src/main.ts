@@ -19,6 +19,9 @@ export const createApp = ViteSSG(App, { routes }, ({ app, router, initialState }
   else store.replaceState(initialState.store || store.state);
 
   router.beforeEach((to, from, next) => {
+    if (/^\/zh/.test(to.path) && store.state.lang === 'en-US') {
+      store.dispatch('changeLang', 'zh-CN');
+    }
     // perform the (user-implemented) store action to fill the store's state
     // if (!store.getters.ready) store.dispatch('initialize');
 

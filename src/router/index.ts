@@ -1,57 +1,92 @@
 import { RouteRecordRaw } from 'vue-router';
 import Layout from '@/layouts/index.vue';
 
+import ZhIndexPage from '@/pages/ZH/index.vue';
+import ZhDocsPage from '@/pages/ZH/index.vue';
+import ZhDemoPage from '@/pages/ZH/index.vue';
+import ZhAboutPage from '@/pages/ZH/index.vue';
+
+import IndexPage from '@/pages/Preview/template.vue';
+import DocsPage from '@/pages/Doc/index.vue';
+import DemoPage from '@/pages/Demo/index.vue';
+import AboutPage from '@/pages/About/index.vue';
+
+const zhRoute: RouteRecordRaw = {
+  path: '/zh',
+  name: 'ZhIndex',
+  component: Layout,
+  children: [
+    {
+      path: '',
+      name: 'ZhIndexPage',
+      component: ZhIndexPage
+    },
+    {
+      path: 'docs',
+      name: 'ZhDocsPage',
+      component: ZhDocsPage
+    },
+    {
+      path: 'demo',
+      name: 'ZhDemoPage',
+      component: ZhDemoPage
+    },
+    {
+      path: 'about',
+      name: 'ZhAboutPage',
+      component: ZhAboutPage
+    }
+  ]
+};
+
 export const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'Index',
-    redirect: '/index',
     component: Layout,
     children: [
       {
-        path: 'index',
+        path: '',
         name: 'IndexPage',
-        component: () => import('@/pages/Preview/template.vue')
+        component: IndexPage
       }
     ]
   },
   {
     path: '/docs',
     name: 'Docs',
-    redirect: '/docs/index',
     component: Layout,
     children: [
       {
-        path: 'index',
+        path: '',
         name: 'DocsIndex',
-        component: () => import('@/pages/Doc/index.vue')
+        component: DocsPage
       }
     ]
   },
   {
     path: '/demo',
     name: 'Demo',
-    redirect: '/demo/index',
     component: Layout,
     children: [
       {
-        path: 'index',
+        path: '',
         name: 'DemoIndex',
-        component: () => import('@/pages/Demo/index.vue')
+        component: DemoPage
       }
     ]
   },
   {
     path: '/about',
     name: 'About',
-    redirect: '/about/index',
     component: Layout,
     children: [
       {
-        path: 'index',
+        path: '',
         name: 'AboutIndex',
-        component: () => import('@/pages/About/index.vue')
+        component: AboutPage
       }
     ]
-  }
+  },
+  zhRoute
 ];

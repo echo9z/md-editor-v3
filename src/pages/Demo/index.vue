@@ -1,35 +1,22 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
-import MdEditor, { HeadList } from 'md-editor-v3';
-import axios from '@/utils/request';
+import { ref } from 'vue';
+import type { PropType } from 'vue';
+import MdEditor from 'md-editor-v3';
 import { version } from '../../../package.json';
 import { useStore } from 'vuex';
+import text from '/public/demo-en-US.md';
+
+const props = defineProps({
+  text: {
+    type: String as PropType<string>,
+    default: text
+  }
+});
 
 const MdCatalog = MdEditor.Catalog;
-
-const mdText = ref();
-const catalogList = ref<Array<HeadList>>([]);
-const store = useStore();
 const scrollElement = document.documentElement;
-const queryMd = () => {
-  axios
-    .get(`/demo-${store.state.lang}.md`)
-    .then(({ data }) => {
-      mdText.value = (data as string).replace(/\$\{EDITOR_VERSION\}/g, version);
-    })
-    .catch((e) => {
-      console.log(e);
-
-      mdText.value = '文档读取失败！';
-    });
-};
-
-onMounted(queryMd);
-watch(() => store.state.lang, queryMd);
-
-const onGetCatalog = (arr: any[]) => {
-  catalogList.value = arr;
-};
+const mdText = ref(props.text?.replace(/\$\{EDITOR_VERSION\}/g, version));
+const store = useStore();
 </script>
 
 <template>
@@ -44,7 +31,6 @@ const onGetCatalog = (arr: any[]) => {
           :previewTheme="store.state.previewTheme"
           preview-only
           show-code-row-number
-          @onGetCatalog="onGetCatalog"
         />
       </div>
       <div class="catalog">
