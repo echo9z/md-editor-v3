@@ -1,10 +1,4 @@
 @import './vars';
-@import '../node_modules/ant-design-vue/lib/back-top/style';
-@import '../node_modules/ant-design-vue/lib/dropdown/style';
-@import '../node_modules/ant-design-vue/lib/menu/style';
-@import '../node_modules/ant-design-vue/lib/affix/style';
-@import '../node_modules/ant-design-vue/lib/anchor/style';
-@import '../node_modules/ant-design-vue/lib/modal/style';
 
 body,
 h1,
@@ -87,8 +81,6 @@ body {
 .container {
   width: 1170px;
   margin: 0 auto;
-  position: relative;
-  overflow: auto;
 }
 
 .btn {
@@ -107,11 +99,7 @@ body {
   color: #515a6e;
   background-color: @bkColor;
   border-color: @borderColor;
-  margin-left: 10px;
-
-  &:first-of-type {
-    margin-left: 0;
-  }
+  margin-right: 10px;
 
   &:hover {
     color: #57a3f3;
@@ -120,14 +108,15 @@ body {
   }
 }
 
+.affix {
+  position: sticky;
+  top: 10px;
+}
+
 .docs-page {
   color: @color;
   background-color: @bkColor;
   min-height: 100vh;
-
-  .ant-anchor {
-    font-size: 1rem;
-  }
 
   .doc {
     display: flex;
@@ -135,10 +124,6 @@ body {
 
     .catalog {
       width: 25%;
-
-      .ant-anchor-wrapper {
-        padding-left: 1rem;
-      }
     }
 
     .content {
@@ -184,28 +169,6 @@ body {
         background-color: @bkColorDark;
       }
     }
-  }
-
-  // 覆盖ant，锚点默认样式
-  .ant-anchor {
-    color: @colorDark;
-
-    .ant-anchor-ink::before {
-      background-color: @borderColorDark;
-    }
-
-    .ant-anchor-link-title {
-      color: @colorDark;
-    }
-  }
-
-  .ant-dropdown-menu-dark {
-    background-color: @bkColorDark;
-    border: 1px solid @borderColorDark;
-  }
-
-  .ant-back-top {
-    color: @colorDark;
   }
 }
 

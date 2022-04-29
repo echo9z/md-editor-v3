@@ -1,0 +1,26 @@
+@import '../../vars';
+
+.iz-dropdown {
+  overflow: hidden;
+  box-sizing: border-box;
+  position: absolute;
+  transition: all 0.3s;
+  opacity: 1;
+  z-index: 10000;
+  background-color: @bkColor;
+
+  &-hidden {
+    opacity: 0;
+    z-index: -10000;
+  }
+
+  &-overlay {
+    margin-top: 6px;
+  }
+}
+
+.theme-dark {
+  .iz-dropdown {
+    background-color: @bkColorDark;
+  }
+}

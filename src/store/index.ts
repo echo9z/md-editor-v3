@@ -15,7 +15,8 @@ export interface StateType {
   lang: Lang;
 }
 
-const stagedStore = localStorage.getItem(STORAGED_STORE_KEY);
+const stagedStore =
+  typeof localStorage !== 'undefined' ? localStorage.getItem(STORAGED_STORE_KEY) : null;
 
 // export const key: InjectionKey<Store<StateType>> = Symbol();
 

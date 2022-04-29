@@ -1,7 +1,7 @@
 <template>
   <div class="project-preview">
     <div class="container">
-      <Editor
+      <md-editor
         editorId="md-prev"
         v-model="data.text"
         :language="store.state.lang"
@@ -46,14 +46,14 @@
         @onUploadImg="uploadImg"
       >
         <template #defToolbars>
-          <Editor.NormalToolbar title="mark" @click="markHandler">
+          <MdEditor.NormalToolbar title="mark" @click="markHandler">
             <template #trigger>
               <svg class="md-icon" aria-hidden="true">
                 <use xlink:href="#icon-mark"></use>
               </svg>
             </template>
-          </Editor.NormalToolbar>
-          <Editor.DropdownToolbar
+          </MdEditor.NormalToolbar>
+          <MdEditor.DropdownToolbar
             title="emoji"
             :visible="data.emojiVisible"
             :onChange="emojiVisibleChanged"
@@ -75,9 +75,9 @@
                 <use xlink:href="#icon-emoji"></use>
               </svg>
             </template>
-          </Editor.DropdownToolbar>
+          </MdEditor.DropdownToolbar>
         </template>
-      </Editor>
+      </md-editor>
       <br />
       <span class="tips-text">
         <span v-if="store.state.lang === 'zh-CN'"
@@ -93,7 +93,7 @@
 
 <script setup lang="ts">
 import { reactive, watch } from 'vue';
-import Editor from 'md-editor-v3';
+import MdEditor from 'md-editor-v3';
 import { mdText, mdEnText } from '../../data';
 import axios from '../..//utils/request';
 import './index.less';
@@ -190,7 +190,7 @@ const uploadImg = async (files: Array<File>, callback: (urls: string[]) => void)
   callback(res.map((item: any) => item.data.url));
 };
 
-const emojiVisibleChanged = (visible) => {
+const emojiVisibleChanged = (visible: boolean) => {
   data.emojiVisible = visible;
 };
 </script>
