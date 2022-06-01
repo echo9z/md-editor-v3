@@ -3,9 +3,10 @@ import {
   PropType,
   onBeforeUnmount,
   CSSProperties,
-  SetupContext
+  SetupContext,
+  reactive
 } from 'vue';
-import { prefix, allToolbar } from './config';
+import { prefix, allToolbar, allFooter } from './config';
 import {
   useKeyBoard,
   useProvide,
@@ -15,6 +16,7 @@ import {
 } from './composition';
 import ToolBar from './layouts/Toolbar';
 import Content from './layouts/Content';
+import Footer from './layouts/Footer';
 import MdCatalog from './extensions/MdCatalog';
 import bus from './utils/event-bus';
 
@@ -28,7 +30,8 @@ import {
   MarkedHeadingId,
   // MarkedImage,
   Themes,
-  InnerError
+  InnerError,
+  Footers
 } from './type';
 
 import './styles/index.less';
@@ -266,6 +269,17 @@ const props = {
   codeTheme: {
     type: String as PropType<string>,
     default: 'atom'
+  },
+  footers: {
+    type: Array as PropType<Array<Footers>>,
+    default: allFooter
+  },
+  scrollAuto: {
+    type: Boolean as PropType<boolean>,
+    default: true
+  },
+  defFooters: {
+    type: [String, Object] as PropType<string | JSX.Element>
   }
 };
 
@@ -288,6 +302,10 @@ const Editor = defineComponent({
     // 全局配置扩展
     const extension = Editor.extension || {};
 
+    const state = reactive({
+      scrollAuto: props.scrollAuto
+    });
+
     // 快捷键监听
     useKeyBoard(props, context);
     // provide 部分prop
@@ -305,6 +323,7 @@ const Editor = defineComponent({
 
     return () => {
       const defToolbars = getSlot({ props, ctx: context }, 'defToolbars');
+      const defFooters = getSlot({ props, ctx: context }, 'defFooters');
 
       return (
         <div
@@ -370,7 +389,17 @@ const Editor = defineComponent({
             // extensions={props.extensions}
             // markedImage={props.markedImage}
             mermaidTemplate={extension?.editorConfig?.mermaidTemplate}
+            scrollAuto={state.scrollAuto}
           />
+          {!props.previewOnly && props.footers?.length > 0 && (
+            <Footer
+              modelValue={props.modelValue}
+              footers={props.footers}
+              defFooters={defFooters}
+              scrollAuto={state.scrollAuto}
+              onScrollAutoChange={(v) => (state.scrollAuto = v)}
+            />
+          )}
           {catalogShow.value && (
             <MdCatalog
               theme={props.theme}

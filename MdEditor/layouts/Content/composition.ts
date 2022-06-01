@@ -252,7 +252,7 @@ export const useMarked = (props: EditorContentProps, mermaidData: any) => {
 
   // 图片
   renderer.image = (href, title = '', desc = '') => {
-    return `<span class="figure"><img src="${href}" title="${title}" alt="${desc}"><span class="figcaption">${desc}</span></span>`;
+    return `<span class="figure"><img src="${href}" title="${title}" alt="${desc}" zoom><span class="figcaption">${desc}</span></span>`;
   };
 
   // 列表
@@ -285,7 +285,7 @@ export const useMarked = (props: EditorContentProps, mermaidData: any) => {
 
     // return props.markedHeading(...headProps);
     // 我们默认同一级别的标题，你不会定义两个相同的
-    const id = props.markedHeadingId(raw, level);
+    const id = props.markedHeadingId(raw, level, heads.value.length);
 
     // 如果标题有markdown语法内容，会按照该语法添加标题，而不再自定义，但是仍然支持目录定位
     if (text !== raw) {
@@ -479,20 +479,11 @@ export const useAutoScroll = (
     });
   };
 
-  onMounted(() => {
-    if (previewRef.value || htmlRef.value) {
-      [initScrollAuto, clearScrollAuto] = scrollAuto(
-        textAreaRef.value as HTMLElement,
-        (previewRef.value as HTMLElement) || htmlRef.value
-      );
-    }
-  });
-
   // 编译事件
   const htmlChanged = () => {
     nextTick(() => {
       // 更新完毕后判断是否需要重新绑定滚动事件
-      if (props.setting.preview && !previewOnly) {
+      if (props.setting.preview && !previewOnly && props.scrollAuto) {
         clearScrollAuto();
         initScrollAuto();
       }
@@ -520,8 +511,27 @@ export const useAutoScroll = (
   watch(() => html.value, htmlChanged);
   watch(() => props.setting.preview, settingPreviewChanged);
   watch(() => props.setting.htmlPreview, settingPreviewChanged);
+  watch(
+    () => props.scrollAuto,
+    (sa) => {
+      if (sa) {
+        initScrollAuto();
+      } else {
+        clearScrollAuto();
+      }
+    }
+  );
 
-  onMounted(htmlChanged);
+  onMounted(() => {
+    initCopyEntry();
+
+    if (!previewOnly && props.scrollAuto && (previewRef.value || htmlRef.value)) {
+      [initScrollAuto, clearScrollAuto] = scrollAuto(
+        textAreaRef.value as HTMLElement,
+        (previewRef.value as HTMLElement) || htmlRef.value
+      );
+    }
+  });
 };
 
 export const useAutoGenrator = (props: EditorContentProps, textAreaRef: Ref) => {
@@ -715,7 +725,7 @@ export const userZoom = (html: Ref<string>) => {
   const editorId = inject('editorId') as string;
 
   const zoomHander = debounce(() => {
-    const imgs = document.querySelectorAll(`#${editorId}-preview img`);
+    const imgs = document.querySelectorAll(`#${editorId}-preview img[zoom]`);
 
     if (imgs.length === 0) {
       return;

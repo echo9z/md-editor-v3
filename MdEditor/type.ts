@@ -98,6 +98,10 @@ export interface StaticTextDefaultValue {
     inline: string;
     block: string;
   };
+  footer?: {
+    markdownTotal: string;
+    scrollAuto: string;
+  };
 }
 
 export interface StaticTextDefault {
@@ -108,6 +112,8 @@ export interface StaticTextDefault {
 export type StaticTextDefaultKey = keyof StaticTextDefault;
 
 export type ToolbarNames = keyof ToolbarTips | number;
+
+export type Footers = '=' | 'mardownTotal' | 'scrollSwitch' | number;
 
 export interface SettingType {
   pageFullScreen: boolean;
@@ -142,7 +148,7 @@ export interface HeadList {
 //   }
 // ) => string;
 
-export type MarkedHeadingId = (text: string, level: number) => string;
+export type MarkedHeadingId = (text: string, level: number, index: number) => string;
 
 // export type MarkedImage = (href: string, title: string, desc: string) => string;
 
