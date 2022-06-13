@@ -96,7 +96,9 @@ export const useHistory = (
     props.onChange(currHistory.content);
 
     // 选中内容
-    setPosition(textAreaRef.value, currHistory.startPos, currHistory.endPos);
+    setPosition(textAreaRef.value, currHistory.startPos, currHistory.endPos).then(() => {
+      bus.emit(editorId, 'selectTextChange');
+    });
   };
 
   const saveHistory = (content: string) => {
@@ -133,9 +135,6 @@ export const useHistory = (
 
         // 下标调整为最后一个位置
         history.curr = history.list.length - 1;
-
-        // 保存记录后重新记录位置
-        saveHistoryPos();
       } else {
         history.userUpdated = true;
       }
@@ -154,6 +153,17 @@ export const useHistory = (
     }
   });
 
+  watch(
+    () => props.value,
+    () => {
+      // 更新后清除选中内容
+      bus.emit(editorId, 'selectTextChange');
+    },
+    {
+      flush: 'post'
+    }
+  );
+
   onMounted(() => {
     bus.on(editorId, {
       name: 'ctrlZ',
@@ -171,8 +181,10 @@ export const useHistory = (
       }
     });
 
-    // textAreaRef.value.addEventListener('keydown', saveHistoryPos);
-    textAreaRef.value.addEventListener('click', saveHistoryPos);
+    bus.on(editorId, {
+      name: 'saveHistoryPos',
+      callback: saveHistoryPos
+    });
   });
 };
 
@@ -313,8 +325,17 @@ export const useMarked = (props: EditorContentProps, mermaidData: any) => {
   if (highlightIns) {
     // 提供了hljs，在创建阶段即完成设置
     marked.setOptions({
-      highlight: (code) => {
-        const codeHtml = highlightIns.highlightAuto(code).value;
+      highlight: (code, language) => {
+        let codeHtml = '';
+        if (language) {
+          try {
+            codeHtml = highlightIns.highlight(code, { language }).value;
+          } catch {
+            codeHtml = highlightIns.highlightAuto(code).value;
+          }
+        } else {
+          codeHtml = highlightIns.highlightAuto(code).value;
+        }
 
         return showCodeRowNumber
           ? generateCodeRowNumber(codeHtml)
@@ -358,8 +379,18 @@ export const useMarked = (props: EditorContentProps, mermaidData: any) => {
   // 高亮代码js加载完成后回调
   const highlightLoad = () => {
     marked.setOptions({
-      highlight: (code) => {
-        const codeHtml = window.hljs.highlightAuto(code).value;
+      highlight: (code, language) => {
+        let codeHtml = '';
+        if (language) {
+          try {
+            codeHtml = window.hljs.highlight(code, { language }).value;
+          } catch {
+            codeHtml = window.hljs.highlightAuto(code).value;
+          }
+        } else {
+          codeHtml = window.hljs.highlightAuto(code).value;
+        }
+
         return showCodeRowNumber
           ? generateCodeRowNumber(codeHtml)
           : `<span class="code-block">${codeHtml}</span>`;
