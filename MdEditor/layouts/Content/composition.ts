@@ -14,8 +14,8 @@ import { marked } from 'marked';
 import copy from 'copy-to-clipboard';
 import mediumZoom from 'medium-zoom';
 import { EditorContentProps } from './index';
-import { HeadList, StaticTextDefaultValue, ConfigOption } from '../../type';
-import { prefix, katexUrl, mermaidUrl } from '../../config';
+import { HeadList, StaticTextDefaultValue } from '../../type';
+import { prefix, katexUrl, mermaidUrl, configOption } from '../../config';
 import bus from '../../utils/event-bus';
 import {
   insert,
@@ -148,9 +148,12 @@ export const useHistory = (
     }, 150);
   };
 
-  const saveHistoryPos = () => {
+  /**
+   * @param force 是否强制更新光标历史
+   */
+  const saveHistoryPos = (force: boolean) => {
     // 如果不是初始值，代表上次记录未插入输入历史
-    if (historyPos === POSITION_START) {
+    if (historyPos === POSITION_START || force) {
       historyPos = [textAreaRef.value?.selectionStart, textAreaRef.value?.selectionEnd];
     }
   };
@@ -208,7 +211,7 @@ export const useMarked = (props: EditorContentProps, mermaidData: any) => {
     markedOptions,
     editorExtensions,
     editorConfig
-  } = inject('extension') as ConfigOption;
+  } = configOption;
   // 是否显示行号
   const showCodeRowNumber = inject('showCodeRowNumber') as boolean;
   const editorId = inject('editorId') as string;
@@ -273,8 +276,10 @@ export const useMarked = (props: EditorContentProps, mermaidData: any) => {
   };
 
   // 图片
-  renderer.image = (href, title = '', desc = '') => {
-    return `<span class="figure"><img src="${href}" title="${title}" alt="${desc}" zoom><span class="figcaption">${desc}</span></span>`;
+  renderer.image = (href, title, desc) => {
+    return `<span class="figure"><img src="${href}" title="${title || ''}" alt="${
+      desc || ''
+    }" zoom><span class="figcaption">${desc || ''}</span></span>`;
   };
 
   // 列表
@@ -340,7 +345,7 @@ export const useMarked = (props: EditorContentProps, mermaidData: any) => {
         const hljsLang = highlightIns.getLanguage(language);
         if (language && hljsLang) {
           codeHtml = highlightIns.highlight(code, {
-            language: hljsLang.name.split(/,|\s/)[0],
+            language,
             ignoreIllegals: true
           }).value;
         } else {
@@ -394,7 +399,7 @@ export const useMarked = (props: EditorContentProps, mermaidData: any) => {
         const hljsLang = window.hljs.getLanguage(language);
         if (language && hljsLang) {
           codeHtml = window.hljs.highlight(code, {
-            language: hljsLang.name.split(/,|\s/)[0],
+            language,
             ignoreIllegals: true
           }).value;
         } else {
@@ -566,11 +571,15 @@ export const useAutoScroll = (
   onMounted(() => {
     initCopyEntry();
 
-    if (!previewOnly && props.scrollAuto && (previewRef.value || htmlRef.value)) {
+    if (!previewOnly && (previewRef.value || htmlRef.value)) {
       [initScrollAuto, clearScrollAuto] = scrollAuto(
         textAreaRef.value as HTMLElement,
         (previewRef.value as HTMLElement) || htmlRef.value
       );
+    }
+
+    if (props.scrollAuto) {
+      initScrollAuto();
     }
   });
 };
@@ -647,7 +656,6 @@ export const useAutoGenrator = (props: EditorContentProps, textAreaRef: Ref) => 
               {
                 ...params,
                 tabWidth,
-                mermaidTemplate: props.mermaidTemplate,
                 editorId
               }
             )
@@ -676,7 +684,7 @@ export const useAutoGenrator = (props: EditorContentProps, textAreaRef: Ref) => 
 
 export const useMermaid = (props: EditorContentProps) => {
   const theme = inject('theme') as ComputedRef<string>;
-  const { editorExtensions } = inject('extension') as ConfigOption;
+  const { editorExtensions } = configOption;
   const mermaidConf = editorExtensions?.mermaid;
 
   const mermaidData = reactive({

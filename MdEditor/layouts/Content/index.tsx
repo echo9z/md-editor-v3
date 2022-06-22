@@ -30,7 +30,6 @@ export type EditorContentProps = Readonly<{
   sanitize: (html: string) => string;
   placeholder: string;
   noKatex?: boolean;
-  mermaidTemplate?: MermaidTemplate;
   scrollAuto?: boolean;
 }>;
 
@@ -77,10 +76,6 @@ export default defineComponent({
     noKatex: {
       type: Boolean as PropType<boolean>,
       default: false
-    },
-    mermaidTemplate: {
-      type: Object as PropType<MermaidTemplate>,
-      default: () => ({})
     },
     scrollAuto: {
       type: Boolean as PropType<boolean>
@@ -130,7 +125,7 @@ export default defineComponent({
                   ref={textAreaRef}
                   value={props.value}
                   onKeydown={() => {
-                    bus.emit(editorId, 'saveHistoryPos');
+                    bus.emit(editorId, 'saveHistoryPos', true);
                   }}
                   onCompositionstart={() => {
                     completeStatus.value = false;

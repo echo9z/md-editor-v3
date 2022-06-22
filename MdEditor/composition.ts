@@ -10,7 +10,7 @@ import {
 } from 'vue';
 import bus from './utils/event-bus';
 import { ToolDirective } from './utils/content-help';
-import { ToolbarNames, ConfigOption, InnerError, SettingType } from './type';
+import { ToolbarNames, InnerError, SettingType } from './type';
 import { appendHandler } from './utils/dom';
 import {
   prefix,
@@ -19,7 +19,8 @@ import {
   prettierUrl,
   cropperUrl,
   highlightUrl,
-  codeCss
+  codeCss,
+  configOption
 } from './config';
 
 export const useKeyBoard = (props: any, context: SetupContext) => {
@@ -320,9 +321,9 @@ export const useKeyBoard = (props: any, context: SetupContext) => {
   });
 };
 
-export const useProvide = (props: any, extension: ConfigOption) => {
+export const useProvide = (props: any) => {
   const { editorId } = props;
-  const highlightConfig = extension?.editorExtensions?.highlight;
+  const highlightConfig = configOption?.editorExtensions?.highlight;
 
   provide('editorId', editorId);
 
@@ -338,21 +339,6 @@ export const useProvide = (props: any, extension: ConfigOption) => {
   provide(
     'highlight',
     computed(() => {
-      // // 优先配置
-      // let url = highlightConfig?.atom || highlightUrl.atom;
-
-      // // 根据预览主题判定合理切换
-      // switch (props.previewTheme) {
-      //   case 'github': {
-      //     if (props.theme === 'dark') {
-      //       url = highlightConfig?.githubDark || highlightUrl.githubDark;
-      //     } else {
-      //       url = highlightConfig?.github || highlightUrl.github;
-      //     }
-
-      //     break;
-      //   }
-      // }
       // 备选列表
       const cssList = {
         ...codeCss,
@@ -381,7 +367,7 @@ export const useProvide = (props: any, extension: ConfigOption) => {
   const usedLanguageText = computed(() => {
     const allText: any = {
       ...staticTextDefault,
-      ...extension?.editorConfig?.languageUserDefined
+      ...configOption?.editorConfig?.languageUserDefined
     };
 
     if (allText[props.language]) {
@@ -393,70 +379,73 @@ export const useProvide = (props: any, extension: ConfigOption) => {
 
   provide('usedLanguageText', usedLanguageText);
 
-  // provide('Cropper', props.Cropper);
-
   // 提供预览主题
   provide(
     'previewTheme',
     computed(() => props.previewTheme)
   );
-
-  // config extension
-  provide('extension', extension);
-  // -end-
 };
 
-export const useExpansion = (props: any, extension: ConfigOption) => {
+export const useExpansion = (props: any) => {
   // 这部分内容只配置，不需要响应式更新
-  const {
-    // iconfontJs,
-    noPrettier,
-    // prettierCDN,
-    // prettierMDCDN,
-    previewOnly
-    // cropperCss,
-    // cropperJs
-  } = props;
+  const { noPrettier, previewOnly, noIconfont } = props;
+
+  const { editorExtensions } = configOption;
+
+  // 判断是否需要插入prettier标签
+  const noPrettierScript =
+    noPrettier || !!configOption.editorExtensions?.prettier?.prettierInstance;
+
+  // 判断是否需要插入prettier markdown扩展标签
+  const noParserMarkdownScript =
+    noPrettier || !!configOption.editorExtensions?.prettier?.parserMarkdownInstance;
+
+  // 判断是否需要插入裁剪图片标签
+  const noCropperScript = !!configOption.editorExtensions?.cropper?.instance;
 
   onMounted(() => {
     // 图标
     const iconfontScript = document.createElement('script');
-    iconfontScript.src = extension.editorExtensions?.iconfont || iconfontUrl;
+    iconfontScript.src = editorExtensions?.iconfont || iconfontUrl;
     iconfontScript.id = `${prefix}-icon`;
 
     // prettier
     const prettierScript = document.createElement('script');
     const prettierMDScript = document.createElement('script');
 
-    prettierScript.src =
-      extension.editorExtensions?.prettier?.standaloneJs || prettierUrl.main;
+    prettierScript.src = editorExtensions?.prettier?.standaloneJs || prettierUrl.main;
     prettierScript.id = `${prefix}-prettier`;
 
     prettierMDScript.src =
-      extension.editorExtensions?.prettier?.parserMarkdownJs || prettierUrl.markdown;
+      editorExtensions?.prettier?.parserMarkdownJs || prettierUrl.markdown;
     prettierMDScript.id = `${prefix}-prettierMD`;
 
     // 裁剪图片
     const cropperLink = document.createElement('link');
     cropperLink.rel = 'stylesheet';
-    cropperLink.href = extension.editorExtensions?.cropper?.css || cropperUrl.css;
+    cropperLink.href = editorExtensions?.cropper?.css || cropperUrl.css;
     cropperLink.id = `${prefix}-cropperCss`;
 
     const cropperScript = document.createElement('script');
-    cropperScript.src = extension.editorExtensions?.cropper?.js || cropperUrl.js;
+    cropperScript.src = editorExtensions?.cropper?.js || cropperUrl.js;
     cropperScript.id = `${prefix}-cropper`;
 
     // 非仅预览模式才添加扩展
     if (!previewOnly) {
-      appendHandler(iconfontScript);
+      if (!noIconfont) {
+        appendHandler(iconfontScript);
+      }
 
-      if (!extension.editorExtensions?.cropper?.instance) {
+      if (!noCropperScript) {
         appendHandler(cropperLink);
         appendHandler(cropperScript);
       }
 
-      if (!noPrettier) {
+      if (!noPrettierScript) {
         appendHandler(prettierScript);
+      }
+
+      if (!noParserMarkdownScript) {
         appendHandler(prettierMDScript);
       }
     }
