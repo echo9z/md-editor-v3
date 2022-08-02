@@ -705,20 +705,20 @@ Custom `marked renderer` in `MdEditor.config(option: ConfigOption)`.
             scrollAuto: 'Scroll Auto'
           }
         },
-        // mermaid template
-        mermaidTemplate: {
-          flow: `flow tempalte`,
-          sequence: `sequence template`,
-          gantt: `gantt template`,
-          class: `class template`,
-          state: `state template`,
-          pie: `pie template`,
-          relationship: `relationship template`,
-          journey: `journey template`
-        },
-        // delay rendering time(ms)
-        renderDelay: 0
-      }
+      },
+      // mermaid template
+      mermaidTemplate: {
+        flow: `flow tempalte`,
+        sequence: `sequence template`,
+        gantt: `gantt template`,
+        class: `class template`,
+        state: `state template`,
+        pie: `pie template`,
+        relationship: `relationship template`,
+        journey: `journey template`
+      },
+      // delay rendering time(ms)
+      renderDelay: 0
     }
   });
   ```

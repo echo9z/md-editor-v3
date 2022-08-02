@@ -1,4 +1,4 @@
-var c=Object.defineProperty,p=Object.defineProperties;var u=Object.getOwnPropertyDescriptors;var r=Object.getOwnPropertySymbols;var h=Object.prototype.hasOwnProperty,g=Object.prototype.propertyIsEnumerable;var i=(t,n,e)=>n in t?c(t,n,{enumerable:!0,configurable:!0,writable:!0,value:e}):t[n]=e,s=(t,n)=>{for(var e in n||(n={}))h.call(n,e)&&i(t,e,n[e]);if(r)for(var e of r(n))g.call(n,e)&&i(t,e,n[e]);return t},a=(t,n)=>p(t,u(n));import{d as b,g as v,k as f,n as x,e as k,b as y,h as l,o as T}from"./index.ada72897.js";import{_ as w}from"./index.01f742d1.js";import{_ as E}from"./index.5fffce88.js";var d=`> Use it online: [Go](https://codesandbox.io/s/epic-bird-2znqo).
+var c=Object.defineProperty,p=Object.defineProperties;var u=Object.getOwnPropertyDescriptors;var r=Object.getOwnPropertySymbols;var h=Object.prototype.hasOwnProperty,g=Object.prototype.propertyIsEnumerable;var i=(t,n,e)=>n in t?c(t,n,{enumerable:!0,configurable:!0,writable:!0,value:e}):t[n]=e,s=(t,n)=>{for(var e in n||(n={}))h.call(n,e)&&i(t,e,n[e]);if(r)for(var e of r(n))g.call(n,e)&&i(t,e,n[e]);return t},a=(t,n)=>p(t,u(n));import{d as b,g as v,k as f,n as x,e as k,b as y,h as l,o as T}from"./index.5f171493.js";import{_ as w}from"./index.9641889c.js";import{_ as E}from"./index.e745bd7d.js";var d=`> Use it online: [Go](https://codesandbox.io/s/epic-bird-2znqo).
 
 ## \u{1F92F} Props
 
@@ -705,20 +705,20 @@ Custom \`marked renderer\` in \`MdEditor.config(option: ConfigOption)\`.
             scrollAuto: 'Scroll Auto'
           }
         },
-        // mermaid template
-        mermaidTemplate: {
-          flow: \`flow tempalte\`,
-          sequence: \`sequence template\`,
-          gantt: \`gantt template\`,
-          class: \`class template\`,
-          state: \`state template\`,
-          pie: \`pie template\`,
-          relationship: \`relationship template\`,
-          journey: \`journey template\`
-        },
-        // delay rendering time(ms)
-        renderDelay: 0
-      }
+      },
+      // mermaid template
+      mermaidTemplate: {
+        flow: \`flow tempalte\`,
+        sequence: \`sequence template\`,
+        gantt: \`gantt template\`,
+        class: \`class template\`,
+        state: \`state template\`,
+        pie: \`pie template\`,
+        relationship: \`relationship template\`,
+        journey: \`journey template\`
+      },
+      // delay rendering time(ms)
+      renderDelay: 0
     }
   });
   \`\`\`
@@ -1729,28 +1729,28 @@ const scrollElement = document.documentElement;
             scrollAuto: '\u540C\u6B65\u6EDA\u52A8'
           }
         },
-        // mermaid\u6A21\u677F
-        mermaidTemplate: {
-          // \u6D41\u7A0B\u56FE
-          flow: \`flow tempalte\`,
-          // \u65F6\u5E8F\u56FE
-          sequence: \`sequence template\`,
-          // \u7518\u7279\u56FE
-          gantt: \`gantt template\`,
-          // \u7C7B\u56FE
-          class: \`class template\`,
-          // \u72B6\u6001\u56FE
-          state: \`state template\`,
-          // \u997C\u56FE
-          pie: \`pie template\`,
-          // \u5173\u7CFB\u56FE
-          relationship: \`relationship template\`,
-          // \u65C5\u7A0B\u56FE
-          journey: \`journey template\`
-        },
-        // \u8F93\u5165\u6E32\u67D3\u5EF6\u8FDF\uFF08ms\uFF09
-        renderDelay: 0
-      }
+      },
+      // mermaid\u6A21\u677F
+      mermaidTemplate: {
+        // \u6D41\u7A0B\u56FE
+        flow: \`flow tempalte\`,
+        // \u65F6\u5E8F\u56FE
+        sequence: \`sequence template\`,
+        // \u7518\u7279\u56FE
+        gantt: \`gantt template\`,
+        // \u7C7B\u56FE
+        class: \`class template\`,
+        // \u72B6\u6001\u56FE
+        state: \`state template\`,
+        // \u997C\u56FE
+        pie: \`pie template\`,
+        // \u5173\u7CFB\u56FE
+        relationship: \`relationship template\`,
+        // \u65C5\u7A0B\u56FE
+        journey: \`journey template\`
+      },
+      // \u8F93\u5165\u6E32\u67D3\u5EF6\u8FDF\uFF08ms\uFF09
+      renderDelay: 0
     }
   });
   \`\`\`
