@@ -497,7 +497,7 @@ MdEditor.config({
       :theme="state.theme"
       preview-only
     />
-    <md-atalog
+    <md-catalog
       :editorId="state.id"
       :scroll-element="scrollElement"
       :theme="state.theme"
